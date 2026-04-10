@@ -10,11 +10,11 @@ body {
 .home-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* prevents vertical stretch */
+  align-items: flex-start; 
   margin-top: 20px;
 }
 .main-feed {
-  margin-left: 300px;
+  margin-left: 250px;
 }
 /* Sidebar */
 
