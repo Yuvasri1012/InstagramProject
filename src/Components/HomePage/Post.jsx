@@ -10,15 +10,12 @@ import {
   FaRegBookmark,
   FaBookmark,
 } from "react-icons/fa";
-
 import { FiSend } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
 import "./HomePage.css";
 
 function Post({ post }) {
   const dispatch = useDispatch();
-
-  // ⭐ Comment modal state
   const [showComments, setShowComments] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
 
@@ -30,18 +27,16 @@ function Post({ post }) {
             <div className="story-border">
               <img src={post.profile} alt={post.username} />
             </div>
-
             <div>
               <span>{post.username}</span>
               <p>{post.time}</p>
             </div>
           </div>
-
-          <BsThreeDots />
+          <BsThreeDots style={{ cursor: "pointer" }} />
         </div>
 
         {post.type === "image" ? (
-          <img src={post.content} className="post-img" alt="" />
+          <img src={post.content} className="post-img" alt={post.caption} />
         ) : (
           <video controls className="post-video">
             <source src={post.content} type="video/mp4" />
@@ -50,39 +45,47 @@ function Post({ post }) {
 
         <div className="icon-section">
           <div className="left-icons">
-            {post.liked ? (
-              <FaHeart
-                style={{ color: "red", cursor: "pointer" }}
-                onClick={() => dispatch(toggleLike(post.id))}
+            {/* Bug fix: like icon + correct class name */}
+            <div className="icon-with-text">
+              {post.liked ? (
+                <FaHeart
+                  style={{ color: "red", cursor: "pointer", fontSize: "22px" }}
+                  onClick={() => dispatch(toggleLike(post.id))}
+                />
+              ) : (
+                <FaRegHeart
+                  style={{ cursor: "pointer", fontSize: "22px" }}
+                  onClick={() => dispatch(toggleLike(post.id))}
+                />
+              )}
+              {/* Bug fix: was className="like", should be "like-count" */}
+              <span className="like-count">{post.likes}</span>
+            </div>
+
+            {/* Comment */}
+            <div className="icon-with-text">
+              <FaRegComment
+                style={{ cursor: "pointer", fontSize: "22px" }}
+                onClick={() => setShowComments(true)}
               />
-            ) : (
-              <FaRegHeart
-                style={{ cursor: "pointer" }}
-                onClick={() => dispatch(toggleLike(post.id))}
-              />
-            )}
+              {/* Bug fix: only show count if > 0 */}
+              {commentCount > 0 && (
+                <span className="like-count">{commentCount}</span>
+              )}
+            </div>
 
-            <p className="like">{post.likes}</p>
-
-            {/* ⭐ Comment icon click */}
-            <FaRegComment
-              style={{ cursor: "pointer" }}
-              onClick={() => setShowComments(true)}
-            />
-
-            <p className="comment-count">{commentCount}</p>
-
-            <FiSend />
+            <FiSend style={{ fontSize: "22px", cursor: "pointer" }} />
           </div>
 
+          {/* Save */}
           {post.saved ? (
             <FaBookmark
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", fontSize: "22px" }}
               onClick={() => dispatch(toggleSave(post.id))}
             />
           ) : (
             <FaRegBookmark
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", fontSize: "22px" }}
               onClick={() => dispatch(toggleSave(post.id))}
             />
           )}
@@ -93,7 +96,6 @@ function Post({ post }) {
         </p>
       </div>
 
-      {/* ⭐ Comment Modal render */}
       {showComments && (
         <CommentModal
           post={post}
